@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cupid", "Cupid\Cupid.csproj", "{0ECE1E0A-0E5D-4EF3-9E6B-0D8D4378B19C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cupid.Models", "Cupid.Models\Cupid.Models.csproj", "{ABC425C8-EB58-48DD-99AF-969B51C55804}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0ECE1E0A-0E5D-4EF3-9E6B-0D8D4378B19C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0ECE1E0A-0E5D-4EF3-9E6B-0D8D4378B19C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0ECE1E0A-0E5D-4EF3-9E6B-0D8D4378B19C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0ECE1E0A-0E5D-4EF3-9E6B-0D8D4378B19C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABC425C8-EB58-48DD-99AF-969B51C55804}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABC425C8-EB58-48DD-99AF-969B51C55804}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABC425C8-EB58-48DD-99AF-969B51C55804}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABC425C8-EB58-48DD-99AF-969B51C55804}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0AB5EB44-0230-460D-869A-A933DD660D7F}
+	EndGlobalSection
+EndGlobal
