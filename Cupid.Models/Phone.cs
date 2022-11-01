@@ -1,4 +1,4 @@
-﻿namespace Cupid;
+﻿namespace Cupid.Models;
 
 public class Phone
 {
