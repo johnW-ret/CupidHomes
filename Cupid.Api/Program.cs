@@ -1,9 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using Cupid.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<CupidDb>(options =>
+    options.UseSqlServer(
+    "Server=(localdb)\\mssqllocaldb;Database=MyDatabase;Trusted_Connection=True;"));
 
 var app = builder.Build();
 
