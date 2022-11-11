@@ -10,7 +10,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<CupidDb>(options =>
     options.UseSqlServer(
-    "Server=(localdb)\\mssqllocaldb;Database=MyDatabase;Trusted_Connection=True;"));
+        builder.Configuration.GetConnectionString("Cupid")));
 
 var app = builder.Build();
 
@@ -27,6 +27,8 @@ var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
+
+app.MapGet("/test", async (CupidDb db) => await db.Customers.ToListAsync());
 
 app.MapGet("/weatherforecast", () =>
 {

@@ -6,7 +6,7 @@ public class CupidDb : DbContext
 {
     public CupidDb(DbContextOptions<CupidDb> options)
         : base(options) { }
-    public DbSet<Customer> Games => Set<Customer>();
+    public DbSet<Customer> Customers => Set<Customer>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
