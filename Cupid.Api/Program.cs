@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Cupid.Models;
 using Cupid.Models.Data;
-using System.Reflection.Metadata.Ecma335;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,14 +24,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
+// customer api
 app.MapGet("/customer", async (CupidDb db) => await db.Customer.ToListAsync());
 
-// customer api
 app.MapGet("/customer/{id}", async (int id, CupidDb db) =>
     await db.Customer
     .FirstOrDefaultAsync(c => c.Id == id)
@@ -109,23 +103,4 @@ app.MapPost("/house", async (HouseDataObject houseData, CupidDb db) =>
     return Results.Created($"/house/{house.Entity.Id}", house.Entity);
 });
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateTime.Now.AddDays(index),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
 app.Run();
-
-internal record WeatherForecast(DateTime Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
