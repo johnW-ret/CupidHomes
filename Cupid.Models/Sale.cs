@@ -29,6 +29,7 @@ public class Sale
     public int CustomerId { get; set; }
     public Customer Customer { get; set; } = default!;
     public DateTimeOffset? ClosedOn { get; set; } = default!;
+    public ICollection<SaleNote> Notes { get; set; } = default!;
     public int Budget { get; set; } = default!;
     public int? Price { get; set; } = default!;
 }

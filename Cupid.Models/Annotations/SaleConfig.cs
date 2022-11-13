@@ -23,6 +23,10 @@ public class SaleConfig : IEntityTypeConfiguration<Sale>
             .WithMany(c => c.Sales)
             .IsRequired();
 
+        builder
+            .HasMany(s => s.Notes)
+            .WithOne(sn => sn.Sale);
+
         builder.Property(s => s.ClosedOn);
         builder.Property(s => s.Budget);
         builder.Property(s => s.Price);

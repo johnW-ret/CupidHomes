@@ -21,6 +21,7 @@ public class CupidDb : DbContext
         new HouseConfig().Configure(modelBuilder.Entity<House>());
         new PlanConfig().Configure(modelBuilder.Entity<Plan>());
         new SaleConfig().Configure(modelBuilder.Entity<Sale>());
+        new SaleNoteConfig().Configure(modelBuilder.Entity<SaleNote>());
         new SalespersonConfig().Configure(modelBuilder.Entity<Salesperson>());
     }
 }
