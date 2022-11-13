@@ -36,7 +36,12 @@ app.MapGet("/customer/{id}", async (int id, CupidDb db) =>
 
 app.MapPost("/customer", async (CustomerDataObject customerData, CupidDb db) =>
 {
+    var selectedPlans = await db.Plan
+        .Where(p => customerData.PlanNumbers.Contains(p.Number))
+        .ToListAsync();
+    
     var customer = db.Customer.Add(new(
+        selectedPlans,
         customerData.FirstName,
         customerData.LastName,
         customerData.Notes,
@@ -91,6 +96,7 @@ app.MapGet("/house/{id}", async (int id, CupidDb db) =>
 app.MapPost("/house", async (HouseDataObject houseData, CupidDb db) =>
 {
     var house = db.House.Add(new(
+        houseData.PlanNumber,
         houseData.LotNumber,
         houseData.BlockNumber,
         houseData.Notes,

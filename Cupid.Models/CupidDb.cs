@@ -9,6 +9,7 @@ public class CupidDb : DbContext
         : base(options) { }
     public DbSet<Customer> Customer => Set<Customer>();
     public DbSet<House> House => Set<House>();
+    public DbSet<Plan> Plan => Set<Plan>();
     public DbSet<Sale> Sale => Set<Sale>();
     public DbSet<Salesperson> Salesperson => Set<Salesperson>();
 
@@ -18,6 +19,7 @@ public class CupidDb : DbContext
 
         new CustomerConfig().Configure(modelBuilder.Entity<Customer>());
         new HouseConfig().Configure(modelBuilder.Entity<House>());
+        new PlanConfig().Configure(modelBuilder.Entity<Plan>());
         new SaleConfig().Configure(modelBuilder.Entity<Sale>());
         new SalespersonConfig().Configure(modelBuilder.Entity<Salesperson>());
     }

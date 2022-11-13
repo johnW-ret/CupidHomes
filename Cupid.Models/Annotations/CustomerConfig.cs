@@ -22,6 +22,10 @@ public class CustomerConfig : IEntityTypeConfiguration<Customer>
         builder.Property(p => p.Phone);
 
         builder
+            .HasMany(c => c.Plans)
+            .WithMany(p => p.Customers);
+
+        builder
             .HasMany(c => c.Sales)
             .WithOne(s => s.Customer);
     }

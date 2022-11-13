@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cupid.Models.Migrations
 {
     [DbContext(typeof(CupidDb))]
-    [Migration("20221113213315_InitialCreate")]
+    [Migration("20221113223915_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,6 +57,8 @@ namespace Cupid.Models.Migrations
 
                     b.HasKey("Id");
 
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"));
+
                     b.HasAlternateKey("Email");
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasAlternateKey("Email"), false);
@@ -91,9 +93,34 @@ namespace Cupid.Models.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("PlanNumber")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("PlanNumber");
+
                     b.ToTable("House");
+                });
+
+            modelBuilder.Entity("Cupid.Models.Plan", b =>
+                {
+                    b.Property<int>("Number")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Number"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("RetiredOn")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Number");
+
+                    b.ToTable("Plan");
                 });
 
             modelBuilder.Entity("Cupid.Models.Sale", b =>
@@ -160,6 +187,32 @@ namespace Cupid.Models.Migrations
                     b.ToTable("Salesperson");
                 });
 
+            modelBuilder.Entity("CustomerPlan", b =>
+                {
+                    b.Property<int>("CustomersId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PlansNumber")
+                        .HasColumnType("int");
+
+                    b.HasKey("CustomersId", "PlansNumber");
+
+                    b.HasIndex("PlansNumber");
+
+                    b.ToTable("CustomerPlan");
+                });
+
+            modelBuilder.Entity("Cupid.Models.House", b =>
+                {
+                    b.HasOne("Cupid.Models.Plan", "Plan")
+                        .WithMany()
+                        .HasForeignKey("PlanNumber")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Plan");
+                });
+
             modelBuilder.Entity("Cupid.Models.Sale", b =>
                 {
                     b.HasOne("Cupid.Models.Customer", "Customer")
@@ -181,6 +234,21 @@ namespace Cupid.Models.Migrations
                     b.Navigation("House");
 
                     b.Navigation("Salesperson");
+                });
+
+            modelBuilder.Entity("CustomerPlan", b =>
+                {
+                    b.HasOne("Cupid.Models.Customer", null)
+                        .WithMany()
+                        .HasForeignKey("CustomersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Cupid.Models.Plan", null)
+                        .WithMany()
+                        .HasForeignKey("PlansNumber")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Cupid.Models.Customer", b =>

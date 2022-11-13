@@ -8,6 +8,7 @@ namespace Cupid.Models.Data;
 
 public class HouseDataObject
 {
+    public int PlanNumber { get; set; }
     public int LotNumber { get; set; }
     public int BlockNumber { get; set; }
     public string Notes { get; set; } = default!;

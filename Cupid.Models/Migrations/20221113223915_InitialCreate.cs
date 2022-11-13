@@ -24,27 +24,24 @@ namespace Cupid.Models.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Customer", x => x.Id);
+                    table.PrimaryKey("PK_Customer", x => x.Id)
+                        .Annotation("SqlServer:Clustered", true);
                     table.UniqueConstraint("AK_Customer_Email", x => x.Email)
                         .Annotation("SqlServer:Clustered", false);
                 });
 
             migrationBuilder.CreateTable(
-                name: "House",
+                name: "Plan",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Number = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    LotNumber = table.Column<int>(type: "int", nullable: false),
-                    BlockNumber = table.Column<int>(type: "int", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MarketValue = table.Column<int>(type: "int", nullable: false),
-                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
-                    ClosedOn = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RetiredOn = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_House", x => x.Id);
+                    table.PrimaryKey("PK_Plan", x => x.Number);
                 });
 
             migrationBuilder.CreateTable(
@@ -61,6 +58,55 @@ namespace Cupid.Models.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Salesperson", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerPlan",
+                columns: table => new
+                {
+                    CustomersId = table.Column<int>(type: "int", nullable: false),
+                    PlansNumber = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerPlan", x => new { x.CustomersId, x.PlansNumber });
+                    table.ForeignKey(
+                        name: "FK_CustomerPlan_Customer_CustomersId",
+                        column: x => x.CustomersId,
+                        principalTable: "Customer",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CustomerPlan_Plan_PlansNumber",
+                        column: x => x.PlansNumber,
+                        principalTable: "Plan",
+                        principalColumn: "Number",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "House",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PlanNumber = table.Column<int>(type: "int", nullable: false),
+                    LotNumber = table.Column<int>(type: "int", nullable: false),
+                    BlockNumber = table.Column<int>(type: "int", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MarketValue = table.Column<int>(type: "int", nullable: false),
+                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
+                    ClosedOn = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_House", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_House_Plan_PlanNumber",
+                        column: x => x.PlanNumber,
+                        principalTable: "Plan",
+                        principalColumn: "Number",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -98,6 +144,16 @@ namespace Cupid.Models.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_CustomerPlan_PlansNumber",
+                table: "CustomerPlan",
+                column: "PlansNumber");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_House_PlanNumber",
+                table: "House",
+                column: "PlanNumber");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Sale_CustomerId",
                 table: "Sale",
                 column: "CustomerId");
@@ -116,6 +172,9 @@ namespace Cupid.Models.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "CustomerPlan");
+
+            migrationBuilder.DropTable(
                 name: "Sale");
 
             migrationBuilder.DropTable(
@@ -126,6 +185,9 @@ namespace Cupid.Models.Migrations
 
             migrationBuilder.DropTable(
                 name: "Salesperson");
+
+            migrationBuilder.DropTable(
+                name: "Plan");
         }
     }
 }

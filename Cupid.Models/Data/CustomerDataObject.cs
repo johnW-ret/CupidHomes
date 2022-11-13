@@ -8,6 +8,7 @@ namespace Cupid.Models.Data;
 
 public class CustomerDataObject
 {
+    public List<int> PlanNumbers { get; set; } = default!;
     public string FirstName { get; set; } = default!;
     public string LastName { get; set; } = default!;
     public string Notes { get; set; } = default!;
