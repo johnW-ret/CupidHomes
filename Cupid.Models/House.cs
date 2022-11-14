@@ -2,9 +2,10 @@
 
 public class House
 {
-    public House(int planNumber, int lotNumber, int blockNumber, string notes, int marketValue, bool isAvailable, DateTimeOffset? closedOn)
+    public House(int planNumber, Address address, int lotNumber, int blockNumber, string notes, int marketValue, bool isAvailable, DateTimeOffset? closedOn)
     {
         PlanNumber = planNumber;
+        Address = address;
         LotNumber = lotNumber;
         BlockNumber = blockNumber;
         Notes = notes ?? throw new ArgumentNullException(nameof(notes));
@@ -28,6 +29,8 @@ public class House
     public int Id { get; set; }
     public int PlanNumber { get; set; }
     public Plan Plan { get; set; } = default!;
+    public int AddressId { get; set; }
+    public Address Address { get; set; } = default!;
     public int LotNumber { get; set; }
     public int BlockNumber { get; set; }
     public string Notes { get; set; } = default!;

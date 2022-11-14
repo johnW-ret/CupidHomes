@@ -97,6 +97,7 @@ app.MapPost("/house", async (HouseDataObject houseData, CupidDb db) =>
 {
     var house = db.House.Add(new(
         houseData.PlanNumber,
+        houseData.Address,
         houseData.LotNumber,
         houseData.BlockNumber,
         houseData.Notes,

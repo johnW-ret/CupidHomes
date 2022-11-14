@@ -12,6 +12,10 @@ public class HouseConfig : IEntityTypeConfiguration<House>
         builder
             .HasOne(h => h.Plan);
 
+        builder.Property(h => h.AddressId);
+        builder
+            .HasOne(h => h.Address);
+
         builder.Property(h => h.LotNumber);
         builder.Property(h => h.BlockNumber);
         builder.Property(h => h.Notes);

@@ -17,6 +17,7 @@ public class CupidDb : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        new AddressConfig().Configure(modelBuilder.Entity<Address>());
         new CustomerConfig().Configure(modelBuilder.Entity<Customer>());
         new HouseConfig().Configure(modelBuilder.Entity<House>());
         new PlanConfig().Configure(modelBuilder.Entity<Plan>());
