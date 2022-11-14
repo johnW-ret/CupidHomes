@@ -13,6 +13,7 @@ public class PlanConfig : IEntityTypeConfiguration<Plan>
 
         builder
             .HasMany(p => p.Customers)
-            .WithMany(c => c.Plans);
+            .WithMany(c => c.Plans)
+            .UsingEntity(join => join.ToTable(FieldConstants.CustomerPlanJoinTableName));
     }
 }

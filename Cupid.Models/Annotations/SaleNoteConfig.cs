@@ -16,6 +16,8 @@ public class SaleNoteConfig : IEntityTypeConfiguration<SaleNote>
         builder
             .Property(s => s.CreatedOn)
             .HasDefaultValueSql("getutcdate()");
-        builder.Property(s => s.Notes);
+        builder
+            .Property(s => s.Notes)
+            .HasMaxLength(FieldConstants.NotesFieldMaxLength);
     }
 }

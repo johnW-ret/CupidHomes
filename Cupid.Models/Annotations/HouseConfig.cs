@@ -18,7 +18,10 @@ public class HouseConfig : IEntityTypeConfiguration<House>
 
         builder.Property(h => h.LotNumber);
         builder.Property(h => h.BlockNumber);
-        builder.Property(h => h.Notes);
+        builder
+            .Property(h => h.Notes)
+            .HasMaxLength(FieldConstants.NotesFieldMaxLength);
+
         builder.Property(h => h.MarketValue);
         builder.Property(h => h.IsAvailable);
         builder.Property(h => h.ClosedOn);

@@ -15,15 +15,24 @@ public class CustomerConfig : IEntityTypeConfiguration<Customer>
             .IsClustered(false);
 
         builder.Property(p => p.Id);
-        builder.Property(p => p.FirstName);
-        builder.Property(p => p.LastName);
-        builder.Property(p => p.Notes);
+
+        builder
+            .Property(p => p.FirstName)
+            .HasMaxLength(FieldConstants.NameFieldMaxLength);
+        
+        builder.Property(p => p.LastName)
+            .HasMaxLength(FieldConstants.NameFieldMaxLength);
+        
+        builder.Property(p => p.Notes)
+            .HasMaxLength(FieldConstants.NotesFieldMaxLength);
+
         builder.Property(p => p.AnnualIncome);
         builder.Property(p => p.Phone);
 
         builder
             .HasMany(c => c.Plans)
-            .WithMany(p => p.Customers);
+            .WithMany(p => p.Customers)
+            .UsingEntity(join => join.ToTable(FieldConstants.CustomerPlanJoinTableName));
 
         builder
             .HasMany(c => c.Sales)

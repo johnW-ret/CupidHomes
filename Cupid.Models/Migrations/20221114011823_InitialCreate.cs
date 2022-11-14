@@ -10,14 +10,31 @@ namespace Cupid.Models.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Address",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AddressLine1 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AddressLine2 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    State = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Zip = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Address", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Customer",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     AnnualIncome = table.Column<int>(type: "int", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -50,8 +67,8 @@ namespace Cupid.Models.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     DateOfBirth = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     Commission = table.Column<double>(type: "float", nullable: false)
                 },
@@ -61,39 +78,16 @@ namespace Cupid.Models.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CustomerPlan",
-                columns: table => new
-                {
-                    CustomersId = table.Column<int>(type: "int", nullable: false),
-                    PlansNumber = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CustomerPlan", x => new { x.CustomersId, x.PlansNumber });
-                    table.ForeignKey(
-                        name: "FK_CustomerPlan_Customer_CustomersId",
-                        column: x => x.CustomersId,
-                        principalTable: "Customer",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CustomerPlan_Plan_PlansNumber",
-                        column: x => x.PlansNumber,
-                        principalTable: "Plan",
-                        principalColumn: "Number",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "House",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PlanNumber = table.Column<int>(type: "int", nullable: false),
+                    AddressId = table.Column<int>(type: "int", nullable: false),
                     LotNumber = table.Column<int>(type: "int", nullable: false),
                     BlockNumber = table.Column<int>(type: "int", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     MarketValue = table.Column<int>(type: "int", nullable: false),
                     IsAvailable = table.Column<bool>(type: "bit", nullable: false),
                     ClosedOn = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
@@ -102,8 +96,38 @@ namespace Cupid.Models.Migrations
                 {
                     table.PrimaryKey("PK_House", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_House_Address_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Address",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_House_Plan_PlanNumber",
                         column: x => x.PlanNumber,
+                        principalTable: "Plan",
+                        principalColumn: "Number",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Preference",
+                columns: table => new
+                {
+                    CustomersId = table.Column<int>(type: "int", nullable: false),
+                    PlansNumber = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Preference", x => new { x.CustomersId, x.PlansNumber });
+                    table.ForeignKey(
+                        name: "FK_Preference_Customer_CustomersId",
+                        column: x => x.CustomersId,
+                        principalTable: "Customer",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Preference_Plan_PlansNumber",
+                        column: x => x.PlansNumber,
                         principalTable: "Plan",
                         principalColumn: "Number",
                         onDelete: ReferentialAction.Cascade);
@@ -143,15 +167,39 @@ namespace Cupid.Models.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "SaleNote",
+                columns: table => new
+                {
+                    SaleId = table.Column<int>(type: "int", nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "getutcdate()"),
+                    Notes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SaleNote", x => new { x.SaleId, x.CreatedOn });
+                    table.ForeignKey(
+                        name: "FK_SaleNote_Sale_SaleId",
+                        column: x => x.SaleId,
+                        principalTable: "Sale",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
-                name: "IX_CustomerPlan_PlansNumber",
-                table: "CustomerPlan",
-                column: "PlansNumber");
+                name: "IX_House_AddressId",
+                table: "House",
+                column: "AddressId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_House_PlanNumber",
                 table: "House",
                 column: "PlanNumber");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Preference_PlansNumber",
+                table: "Preference",
+                column: "PlansNumber");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sale_CustomerId",
@@ -172,7 +220,10 @@ namespace Cupid.Models.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CustomerPlan");
+                name: "Preference");
+
+            migrationBuilder.DropTable(
+                name: "SaleNote");
 
             migrationBuilder.DropTable(
                 name: "Sale");
@@ -185,6 +236,9 @@ namespace Cupid.Models.Migrations
 
             migrationBuilder.DropTable(
                 name: "Salesperson");
+
+            migrationBuilder.DropTable(
+                name: "Address");
 
             migrationBuilder.DropTable(
                 name: "Plan");
