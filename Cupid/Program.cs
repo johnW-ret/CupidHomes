@@ -9,6 +9,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 
+builder.Services.AddHttpClient("Api", client => client.BaseAddress = new Uri(builder.Configuration["Api"]));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
