@@ -51,7 +51,7 @@ app.MapPost("/customer", async (CustomerDataObject customerData, CupidDb db) =>
 
     await db.SaveChangesAsync();
 
-    return Results.Created($"/customer/{customer.Entity.Id}", customer.Entity);
+    return Results.Created($"/customer/{customer.Entity.Id}", customerData);
 });
 
 // sale api

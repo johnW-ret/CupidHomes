@@ -5,8 +5,8 @@ using System.Diagnostics;
 
 namespace Cupid.Services
 {
-    public record CustomerResponse(Customer? Value, string Message, bool Error)
-        : TResponse<Customer>(Value, Message, Error);
+    public record CustomerResponse(CustomerDataObject? Value, string Message, bool Error)
+        : TResponse<CustomerDataObject>(Value, Message, Error);
 
     public class CustomerService
     {
@@ -29,7 +29,7 @@ namespace Cupid.Services
                     return new(null, $"{(int)httpResponse.StatusCode} {httpResponse.ReasonPhrase}", true);
                 }
 
-                var created = await httpResponse.Content.ReadFromJsonAsync<Customer>();
+                var created = await httpResponse.Content.ReadFromJsonAsync<CustomerDataObject>();
 
                 return new(created, httpResponse.StatusCode.ToString(), false);
             }
