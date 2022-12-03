@@ -1,0 +1,85 @@
+﻿@page "/customerform"
+
+<PageTitle>Customer From</PageTitle>
+
+@using Cupid.Data
+@using Cupid.Models.Data
+@using Cupid.Services
+@inject WeatherForecastService ForecastService
+@inject CustomerService CustomerService
+
+<h1>Customer From</h1>
+
+<p>Please fill out this form for your customer profile.</p>
+
+<EditForm Model="@CustomerDataObject">
+    <div class="form-group row">
+        <label for="firstName" class="col-sm-2 col-form-label">
+            First Name
+        </label>
+        <div class="col-sm-10">
+            <InputText id="firstName" class="form-control" placeholder="First Name"
+                       @bind-Value="CustomerDataObject.FirstName" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="lastName" class="col-sm-2 col-form-label">
+            Last Name
+        </label>
+        <div class="col-sm-10">
+            <InputText id="lastName" class="form-control" placeholder="Last Name"
+                       @bind-Value="CustomerDataObject.LastName" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="email" class="col-sm-2 col-form-label">
+            Email
+        </label>
+        <div class="col-sm-10">
+            <InputText id="email" class="form-control" placeholder="Email"
+                       @bind-Value="CustomerDataObject.Email" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="phone" class="col-sm-2 col-form-label">
+            Phone
+        </label>
+        <div class="col-sm-10">
+            <InputText id="phone" class="form-control" placeholder="Phone"
+                       @bind-Value="CustomerDataObject.Phone" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="annualincome" class="col-sm-2 col-form-label">
+            Annal Income
+        </label>
+        <div class="col-sm-10">
+            <InputNumber id="annualincome" class="form-control" placeholder="e.g 80,000 (round to thousands)"
+                         @bind-Value="CustomerDataObject.AnnualIncome" />
+        </div>
+    </div>
+
+    @*<div class="form-group row">
+        <label for="plannumber" class="col-sm-2 col-form-label">
+            Plan Numbers
+        </label>
+        <div class="col-sm-10">
+            <InputText id="plannumber" class="form-control" placeholder="Plan Numbers"
+                       @bind-Value="CustomerDataObject.PlanNumbers" />
+        </div>
+    </div>*@
+
+    <button class="btn btn-primary" @onclick="SubmitForm">Submit</button>
+</EditForm>
+
+@code {
+
+    private CustomerDataObject CustomerDataObject { get; set; }
+
+    private async Task SubmitForm()
+    {
+        var response = await CustomerService.PostCustomer(CustomerDataObject);
+
+        // post these information to the database
+    }
+}

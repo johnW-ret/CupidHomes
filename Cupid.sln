@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cupid.Api", "Cupid.Api\Cupi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cupid.Models", "Cupid.Models\Cupid.Models.csproj", "{8A60CE91-10E0-4E1A-91B4-77F9AA3D5678}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cupid", "Cupid\Cupid.csproj", "{CAD39145-F1BC-4CA7-B7A3-C29DBC044762}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cupid", "Cupid\Cupid.csproj", "{CAD39145-F1BC-4CA7-B7A3-C29DBC044762}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
