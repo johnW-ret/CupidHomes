@@ -12,6 +12,13 @@
 
 <p>Please fill out this form for your customer profile.</p>
 
+@if (Message is not null)
+{
+    <div class="@($"alert {AlertClass}")" role="alert">
+        <p>@Message</p>
+    </div>
+}
+
 <EditForm Model="@CustomerDataObject">
     <div class="form-group row">
         <label for="firstName" class="col-sm-2 col-form-label">
@@ -51,7 +58,7 @@
     </div>
     <div class="form-group row">
         <label for="annualincome" class="col-sm-2 col-form-label">
-            Annal Income
+            Annual Income
         </label>
         <div class="col-sm-10">
             <InputNumber id="annualincome" class="form-control" placeholder="e.g 80,000 (round to thousands)"
@@ -60,26 +67,39 @@
     </div>
 
     @*<div class="form-group row">
-        <label for="plannumber" class="col-sm-2 col-form-label">
-            Plan Numbers
-        </label>
-        <div class="col-sm-10">
-            <InputText id="plannumber" class="form-control" placeholder="Plan Numbers"
-                       @bind-Value="CustomerDataObject.PlanNumbers" />
-        </div>
+    <label for="plannumber" class="col-sm-2 col-form-label">
+    Plan Numbers
+    </label>
+    <div class="col-sm-10">
+    <InputText id="plannumber" class="form-control" placeholder="Plan Numbers"
+    @bind-Value="CustomerDataObject.PlanNumbers" />
+    </div>
     </div>*@
 
-    <button class="btn btn-primary" @onclick="SubmitForm">Submit</button>
+    <button class="btn btn-primary" disabled="@Loading" @onclick="SubmitForm">Submit</button>
 </EditForm>
 
 @code {
+    private CustomerDataObject CustomerDataObject = new();
 
-    private CustomerDataObject CustomerDataObject { get; set; }
+    // maybe could all go in the same tuple / record?
+    private bool Error { get; set; }
+    private bool Loading { get; set; }
+    private string? Message { get; set; }
+
+    private string AlertClass => Error ? "alert-danger" : "alert-success";
 
     private async Task SubmitForm()
     {
-        var response = await CustomerService.PostCustomer(CustomerDataObject);
+        Loading = true;
+
+        CustomerDataObject.Notes ??= string.Empty;
+        CustomerDataObject.PlanNumbers ??= new();
+
+        (_, Message, Error) = await CustomerService.PostCustomer(CustomerDataObject);
 
         // post these information to the database
+
+        Loading = false;
     }
 }
