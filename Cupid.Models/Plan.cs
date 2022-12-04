@@ -4,10 +4,10 @@ namespace Cupid.Models;
 
 public class Plan
 {
-    public Plan(int planNumber, string planName, DateTimeOffset? retiredOn)
+    public Plan(int number, string name, DateTimeOffset? retiredOn)
     {
-        Number = planNumber;
-        Name = planName;
+        Number = number;
+        Name = name ?? throw new ArgumentNullException(nameof(name));
         RetiredOn = retiredOn;
     }
 

@@ -54,14 +54,13 @@ app.MapPost("/customer", async (CustomerDataObject customerData, CupidDb db) =>
     return Results.Created($"/customer/{customer.Entity.Id}", customer.Entity);
 });
 
+// plan api
 app.MapPost("/plan", async (PlanDataObject planData, CupidDb db) =>
 {
     var plan = db.Plan.Add(new(
         planData.PlanNumber,
         planData.PlanName,
-        planData.RetiredOn
-        /*new List<Customer>()*/
-        ));
+        planData.RetiredOn));
 
     await db.SaveChangesAsync();
 
