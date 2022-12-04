@@ -5,31 +5,31 @@ using System.Diagnostics;
 
 namespace Cupid.Services;
 
-public record CustomerResponse(CustomerDataObject? Value, string Message, bool Error)
-    : TResponse<CustomerDataObject>(Value, Message, Error);
+public record PlanResponse(List<PlanDataObject>? Value, string Message, bool Error)
+    : TListResponse<PlanDataObject>(Value, Message, Error);
 
-public class CustomerService
+public class PlanService
 {
-    public CustomerService(IHttpClientFactory httpClientFactory)
+    public PlanService(IHttpClientFactory httpClientFactory)
     {
         client = httpClientFactory.CreateClient("Api");
     }
 
     private readonly HttpClient client;
-    private readonly string ApiName = "customer";
+    private readonly string ApiName = "plan";
 
-    public async ValueTask<CustomerResponse> PostCustomer(CustomerDataObject customerDataObject)
+    public async ValueTask<PlanResponse> GetPlans()
     {
         try
         {
-            var httpResponse = await client.PostAsJsonAsync($"{ApiName}", customerDataObject);
+            var httpResponse = await client.GetAsync($"{ApiName}");
 
             if (!httpResponse.IsSuccessStatusCode)
             {
                 return new(null, $"{(int)httpResponse.StatusCode} {httpResponse.ReasonPhrase}", true);
             }
 
-            var created = await httpResponse.Content.ReadFromJsonAsync<CustomerDataObject>();
+            var created = await httpResponse.Content.ReadFromJsonAsync<List<PlanDataObject>>();
 
             return new(created, httpResponse.StatusCode.ToString(), false);
         }

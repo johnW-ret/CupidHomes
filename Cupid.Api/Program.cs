@@ -55,6 +55,13 @@ app.MapPost("/customer", async (CustomerDataObject customerData, CupidDb db) =>
 });
 
 // plan api
+app.MapGet("/plan", async (CupidDb db) => db.Plan
+    .ToListAsync()
+    .GetAwaiter()
+    .GetResult()
+    .Select(p => new PlanDataObject(p.Number, p.RetiredOn, p.Name))
+    .ToList());
+
 app.MapPost("/plan", async (PlanDataObject planData, CupidDb db) =>
 {
     var plan = db.Plan.Add(new(

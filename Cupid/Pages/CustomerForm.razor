@@ -7,6 +7,7 @@
 @using Cupid.Services
 @inject WeatherForecastService ForecastService
 @inject CustomerService CustomerService
+@inject PlanService PlanService
 
 <h1>Customer From</h1>
 
@@ -69,6 +70,10 @@
     <div class="form-group row my-2">
         <h4>Plans</h4>
         <div class="col-sm-10">
+            @if (Loading)
+            {
+                <em>Loading...</em>
+            }
             @foreach (var p in Plans)
             {
                 <label for="@p.Plan.PlanNumber.ToString()" class="col-sm-2 col-form-label">
@@ -84,6 +89,7 @@
 
 @code {
     private CustomerDataObject CustomerDataObject = new();
+    // TODO replace with record class with mutable IsSelected
     private class PlanData
     {
         public PlanDataObject Plan { get; init; } = default!;
@@ -97,7 +103,6 @@
     }
 
     private List<PlanData> Plans { get; set; } = new();
-    private List<bool> SelectedPlans { get; set; } = new();
 
     // maybe could all go in the same tuple / record?
     private bool Error { get; set; }
@@ -106,28 +111,31 @@
 
     private string AlertClass => Error ? "alert-danger" : "alert-success";
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         Loading = true;
 
-        // call service method
+        var response = await PlanService.GetPlans();
 
-        Plans.Add(new(new()
-            {
-                PlanName = "plan 1",
-                PlanNumber = 4
-            }, false));
-        Plans.Add(new(new()
-            {
-                PlanName = "plan 2",
-                PlanNumber = 5
-            }, false));
-
-        SelectedPlans = Plans.Select(x => false).ToList();
+        if (response is { Value: List<PlanDataObject> list })
+        {
+            Plans.AddRange(list
+                .Select(p => new PlanData(p, false))
+                .ToList());
+        }
+        else if (response is { Error: false, Message: null })
+        {
+            Error = true;
+            Message = "Issue receiving content from server";
+        }
+        else
+        {
+            (Error, Message) = (response.Error, response.Message);
+        }
 
         Loading = false;
 
-        return base.OnInitializedAsync();
+        await base.OnInitializedAsync();
     }
 
     private async Task SubmitForm()
@@ -140,7 +148,7 @@
         CustomerDataObject.PlanNumbers = Plans
             .Select((item, index) => (item, index)) // get the index of each item
             .Where(i => i.item.IsSelected)          // filter out unselected items
-            .Select(i => i.index)                   // get the *original* indexes after filtering
+            .Select(i => i.item.Plan.PlanNumber)    // get the *original* indexes after filtering
             .ToList();
 
         // post these information to the database
