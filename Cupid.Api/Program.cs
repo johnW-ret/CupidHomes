@@ -39,7 +39,7 @@ app.MapPost("/customer", async (CustomerDataObject customerData, CupidDb db) =>
     var selectedPlans = await db.Plan
         .Where(p => customerData.PlanNumbers.Contains(p.Number))
         .ToListAsync();
-    
+
     var customer = db.Customer.Add(new(
         selectedPlans,
         customerData.FirstName,
@@ -52,6 +52,20 @@ app.MapPost("/customer", async (CustomerDataObject customerData, CupidDb db) =>
     await db.SaveChangesAsync();
 
     return Results.Created($"/customer/{customer.Entity.Id}", customer.Entity);
+});
+
+app.MapPost("/plan", async (PlanDataObject planData, CupidDb db) =>
+{
+    var plan = db.Plan.Add(new(
+        planData.PlanNumber,
+        planData.PlanName,
+        planData.RetiredOn
+        /*new List<Customer>()*/
+        ));
+
+    await db.SaveChangesAsync();
+
+    return Results.Created($"/plan/{plan.Entity.Number}", plan.Entity);
 });
 
 // sale api
