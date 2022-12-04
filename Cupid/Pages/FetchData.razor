@@ -1,37 +1,45 @@
 ﻿@page "/fetchdata"
 
-<PageTitle>Weather forecast</PageTitle>
+<PageTitle>Customer table</PageTitle>
 
-@using Cupid.Data
-@inject WeatherForecastService ForecastService
+@using Cupid.Models.Data
+@using Cupid.Services
+@inject CustomerService CustomerService
 
-<h1>Weather forecast</h1>
+<h1>Customers</h1>
 
 <p>This component demonstrates fetching data from a service.</p>
 
-@if (forecasts == null)
+@if (Message is not null)
+{
+    <div class="@($"alert {AlertClass}")" role="alert">
+        <p>@Message</p>
+    </div>
+}
+
+@if (Loading)
 {
     <p><em>Loading...</em></p>
 }
-else
+else if (customers is not null)
 {
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Phone</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var customer in customers)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td>@customer.FirstName</td>
+                    <td>@customer.LastName</td>
+                    <td>@customer.Email</td>
+                    <td>@customer.FormattedPhone</td>
                 </tr>
             }
         </tbody>
@@ -39,10 +47,24 @@ else
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
+
+    private List<CustomerDataObject>? customers;
+
+    private bool Error { get; set; }
+    private bool Loading { get; set; }
+    private string? Message { get; set; }
+
+    private string AlertClass => Error ? "alert-danger" : "alert-success";
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+        Loading = true;
+
+        (customers, var message, Error) = await CustomerService.GetCustomers();
+
+        if (Error)
+            Message = message;
+
+        Loading = false;
     }
 }

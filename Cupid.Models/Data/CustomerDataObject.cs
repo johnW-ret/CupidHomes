@@ -15,4 +15,10 @@ public class CustomerDataObject
     public int AnnualIncome { get; set; } = default!;
     public string Email { get; set; } = default!;
     public string Phone { get; set; } = default!;
+    public string FormattedPhone => Phone is { Length: > 9 }
+        ? string.Format("{0}-{1}-{2}",
+            Phone[..3],
+            Phone[3..6],
+            Phone[6..])
+        : Phone;
 }
