@@ -17,6 +17,7 @@ builder.Services.AddDbContext<CupidDb>(options =>
 
 builder.Services.AddHttpClient("RandomApi", client => client.BaseAddress = new Uri(builder.Configuration["RandomApi"]));
 
+builder.Services.AddScoped<RandomAddressService>();
 builder.Services.AddScoped<RandomUserService>();
 
 var app = builder.Build();
@@ -166,6 +167,37 @@ app.MapPost("/house", async (HouseDataObject houseData, CupidDb db) =>
     await db.SaveChangesAsync();
 
     return Results.Created($"/house/{house.Entity.Id}", house.Entity);
+});
+
+app.MapPost("/house/random/{count}", async (int count, CupidDb db, RandomAddressService randomAddressService) =>
+{
+    var randomAddresses = await randomAddressService.GetRandomAddresses(count);
+
+    var plans = await db.Plan.ToListAsync();
+
+    var getRandomPlan = () => plans[Random.Shared.Next(plans.Count)];
+
+    foreach (var address in randomAddresses)
+    {
+        var house = db.House.Add(new(
+            getRandomPlan().Number,
+            new Address(
+                address.street_address,
+                address.secondary_address,
+                address.city,
+                address.state,
+                address.zip),
+            Random.Shared.Next(300),
+            Random.Shared.Next(30),
+            string.Empty,
+            Random.Shared.Next(1000) * 1000,
+            true,
+            null));
+    }
+
+    await db.SaveChangesAsync();
+
+    return Results.Ok();
 });
 
 app.Run();
