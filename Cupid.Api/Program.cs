@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Cupid.Models;
 using Cupid.Models.Data;
+using Cupid.Api.Services;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<CupidDb>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("Cupid")));
+
+builder.Services.AddHttpClient("RandomApi", client => client.BaseAddress = new Uri(builder.Configuration["RandomApi"]));
+
+builder.Services.AddScoped<RandomUserService>();
 
 var app = builder.Build();
 
@@ -52,6 +58,31 @@ app.MapPost("/customer", async (CustomerDataObject customerData, CupidDb db) =>
     await db.SaveChangesAsync();
 
     return Results.Created($"/customer/{customer.Entity.Id}", customerData);
+});
+
+app.MapPost("/customer/random/{count}", async (int count, CupidDb db, RandomUserService randomUserService) =>
+{
+    var randomUsers = await randomUserService.GetRandomUsers(count);
+
+    var plans = await db.Plan.ToListAsync();
+
+    var getRandomPlans = () => plans.Where(p => Random.Shared.Next(1) == 1);
+
+    foreach (var user in randomUsers)
+    {
+        var customer = db.Customer.Add(new(
+            getRandomPlans().ToList(),
+            user.first_name,
+            user.last_name,
+            string.Empty,
+            Random.Shared.Next(1000) * 1000,
+            user.email,
+            string.Join("", Enumerable.Range(0, 10).Select(x => Random.Shared.Next(0, 10)))));
+    }
+
+    await db.SaveChangesAsync();
+
+    return Results.Ok();
 });
 
 // plan api
