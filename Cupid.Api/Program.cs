@@ -104,14 +104,21 @@ app.MapPost("/sale", async (
 
 // house api
 app.MapGet("/house", async (CupidDb db) => await db.House
+    .Include(h => h.Address)
     .ToListAsync());
 
 app.MapGet("/house/{id}", async (int id, CupidDb db) =>
     await db.House
+    .Include(h => h.Address)
     .FirstOrDefaultAsync(h => h.Id == id)
         is House house
             ? Results.Ok(house)
             : Results.NotFound());
+
+app.MapGet("/house/stats", async (CupidDb db) => await db.House
+    .GroupBy(h => h.PlanNumber,
+        (PlanNumber, h) => new HouseStat(PlanNumber, h.Count()))
+    .ToListAsync());
 
 app.MapPost("/house", async (HouseDataObject houseData, CupidDb db) =>
 {

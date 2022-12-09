@@ -1,0 +1,107 @@
+﻿@page "/house"
+
+<PageTitle>Houses</PageTitle>
+
+@using Cupid.Models.Data
+@using Cupid.Services
+@inject HouseService HouseService
+
+<h1>Houses</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (Message is not null)
+{
+    <div class="@($"alert {AlertClass}")" role="alert">
+        <p>@Message</p>
+    </div>
+}
+
+@if (Loading)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    if (houseStats is not null)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Plan Number</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var houseStat in houseStats)
+                {
+                    <tr>
+                        <td>@houseStat.PlanNumber</td>
+                        <td>@houseStat.Count</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    if (houses is not null)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Address</th>
+                    <th>Plan Number</th>
+                    <th>Lot Number</th>
+                    <th>Block Number</th>
+                    <th>Market Value</th>
+                    <th>Is available?</th>
+                    <th>Closed On</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var house in houses)
+                {
+                    <tr>
+                        <td>@house.Address</td>
+                        <td>@house.PlanNumber</td>
+                        <td>@house.LotNumber</td>
+                        <td>@house.BlockNumber</td>
+                        <td>@house.MarketValue</td>
+                        <td>@house.IsAvailable</td>
+                        <td>@house.ClosedOn</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+@code {
+
+    private List<HouseStat>? houseStats;
+    private List<HouseDataObject>? houses;
+
+    private bool Error { get; set; }
+    private bool Loading { get; set; }
+    private string? Message { get; set; }
+
+    private string AlertClass => Error ? "alert-danger" : "alert-success";
+
+    protected override async Task OnInitializedAsync()
+    {
+        Loading = true;
+
+        // don't need to sequentially await, but fine for now
+        (houseStats, var message_rq1, Error) = await HouseService.GetHouseStats();
+
+        if (Error)
+            Message = message_rq1;
+
+        (houses, var message_rq2, Error) = await HouseService.GetHouses();
+
+        if (Error)
+            Message = message_rq2;
+
+        Loading = false;
+    }
+}

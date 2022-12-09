@@ -8,4 +8,9 @@ public class Address
     public string City { get; set; } = default!;
     public string State { get; set; } = default!;
     public string Zip { get; set; } = default!;
+
+    public override string ToString()
+    {
+        return $"{AddressLine1}, {(!string.IsNullOrEmpty(AddressLine2) ? AddressLine2 + ", " : string.Empty)}{City}, {State}, {Zip}";
+    }
 }

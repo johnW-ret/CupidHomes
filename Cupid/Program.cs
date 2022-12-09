@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<CustomerService>();
+builder.Services.AddScoped<HouseService>();
 builder.Services.AddScoped<PlanService>();
 
 builder.Services.AddHttpClient("Api", client => client.BaseAddress = new Uri(builder.Configuration["Api"]));
