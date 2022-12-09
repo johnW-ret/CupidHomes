@@ -20,6 +20,9 @@
 }
 
 <EditForm Model="@CustomerDataObject">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
     <div class="form-group row my-2">
         <label for="firstName" class="col-sm-2 col-form-label">
             First Name
