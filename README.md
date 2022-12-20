@@ -1,6 +1,8 @@
 # Cupid
 ASP.NET Minimal API and corresponding Blazor Server client demo
 
+![preview](docs/preview.jpeg)
+
 ## Build
 ### Configuration
 You must set configuration variables for the project to work properly. You may either create appsettings.json, or use dotnet secrets manager.
